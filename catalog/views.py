@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from .serializers import ProductSerializer, CategorySerializer
-from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer
+from .models import Product, Category, Cart
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 
@@ -40,6 +41,9 @@ def get_product_by_category(request,slug):
 #     serializer = ProductSerializer(products, many=True)
 #     return Response(serializer.data, status=HTTP_200_OK)
 
-
+class CartViewSet(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [AllowAny]
 
 
